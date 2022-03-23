@@ -15,23 +15,16 @@ from termcolor import cprint
 from pyfiglet import figlet_format
 
 
+#global variables
 
-#IMDB search for the add_movie
-def get_imdb(searched_movie):
-    ia = imdb.IMDb()
-    movie = ia.search_movie(searched_movie)
-    return movie
+RAPIDAPI_HOST = 'streaming-availability.p.rapidapi.com'
+RAPIDAPI_KEY = 'c4bc6b5210msh7c0e4e2664d48bfp159b1ajsne6be12300548'
+REQUEST_URL = 'https://streaming-availability.p.rapidapi.com/get/basic'
+country = 'br'
 
-def roll_movie():
-    movie_list = pd.read_csv('movie_list.csv')
-    lucky_movie = movie_list.iloc[np.random.randint(0, movie_list.shape[0]), 0]
-    
-    print('The Lucky Movie iiiiissss:')
-    for i in range(3):
-        print('.')
-        time.sleep(1)
-        
-    fireworks = """
+#ASCII art
+
+fireworks = """
                                        .''.       
        .''.      .        *''*    :_\/_:     . 
       :_\/_:   _\(/_  .:.*_\/_*   : /\ :  .'.:.'.
@@ -41,20 +34,8 @@ def roll_movie():
   '..'  ':::'     * /\ *     .'/.\'.   '
       *            *..*         :
     """
-    print(fireworks)
-    print(lucky_movie)
-    
-    
-def roll_food():
-    food_list = pd.read_csv('food_list.csv')
-    selected_food = food_list.iloc[np.random.randint(0, food_list.shape[0])]
-    
-    print('You are gonna eaaat:')
-    for i in range(3):
-        time.sleep(1)
-        print('.')
-        
-    fork_knife = """
+
+fork_knife = """
            _
       / )
 |||| / /
@@ -65,8 +46,110 @@ def roll_food():
  ||
 (||      
  ""
-    """    
+    """ 
+
+pirate_flag = """
+    ___
+    \_/
+     |._
+     |'."-._.-""--.-"-.__.-'/
+     |  \       .-.        (
+     |   |     (@.@)        )
+     |   |   '=.|m|.='     /
+     |  /    .='`"``=.    /
+     |.'                 (
+     |.-"-.__.-""-.__.-"-.)
+     |
+     |
+     |
+"""
+
+# Functions
+
+#IMDB search for the add_movie
+def get_imdb(searched_movie):
+    ia = imdb.IMDb()
+    movie = ia.search_movie(searched_movie)
+    return movie
+
+
+def roll_movie():
+    movie_list = pd.read_csv('movie_list.csv')
+    lucky_movie = movie_list.iloc[np.random.randint(0, movie_list.shape[0]), :]
     
+    #rolling movie
+    print('The Lucky Movie iiiiissss:')
+    for i in range(3):
+        print('.')
+        time.sleep(1)
+        
+
+    print(fireworks)
+    print(lucky_movie['Title'])
+    for i in range(2):
+        print('.')
+        time.sleep(0.25)
+
+
+    # returning the availability
+    #----
+    def movie_availability(imdb_id):
+        headers = {
+            'X-RapidAPI-Host': RAPIDAPI_HOST,
+            'X-RapidAPI-Key': RAPIDAPI_KEY
+        }
+        params = {
+            'country': country,
+            'imdb_id': f'tt{imdb_id}',
+            'output_language': 'en'
+        }   
+
+        r = requests.get(REQUEST_URL, params=params, headers=headers)
+        
+        movie = r.json()
+        # movie = json.load(f)
+        return movie['streamingInfo']
+    #----
+
+    movie_availability = movie_availability(lucky_movie['movieID'])
+
+    try:
+        netflix_link = movie_availability['netflix']['br']['link']
+        netflix_status = True
+    except:
+        netflix_status = False
+    try:
+        prime_link = movie_availability['prime']['br']['link']
+        prime_status = True
+    except:
+        prime_status = False
+
+            
+    if netflix_status == True:
+        print(f'Netflix link: {netflix_link}')         
+    elif prime_status == True:
+        print(f'Prime link: {prime_link}')         
+    else:
+        print('Raise the sails and keep your gun close...')
+        for i in range(1):
+            print('.')
+            time.sleep(0.25)
+        print("You're going to The Pirate Bay!" )
+        for i in range(1):
+            print('.')
+            time.sleep(1)
+        print(pirate_flag)
+        time.sleep(1)
+    
+def roll_food():
+    food_list = pd.read_csv('food_list.csv')
+    selected_food = food_list.iloc[np.random.randint(0, food_list.shape[0])]
+    
+    print('You are gonna eaaat:')
+    for i in range(3):
+        time.sleep(1)
+        print('.')
+        
     print(fork_knife)
     print(selected_food['Food'])
     
