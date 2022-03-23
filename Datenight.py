@@ -93,7 +93,7 @@ def roll_movie():
 
     # returning the availability
     #----
-    def movie_availability(imdb_id):
+    def get_movie_availability(imdb_id):
         headers = {
             'X-RapidAPI-Host': RAPIDAPI_HOST,
             'X-RapidAPI-Key': RAPIDAPI_KEY
@@ -105,13 +105,15 @@ def roll_movie():
         }   
 
         r = requests.get(REQUEST_URL, params=params, headers=headers)
-        
-        movie = r.json()
-        # movie = json.load(f)
-        return movie['streamingInfo']
+        try:
+            movie = r.json()
+            movie_availability = movie['streamingInfo']
+            return movie_availability
+        except:
+            return 'piracy time'
     #----
 
-    movie_availability = movie_availability(lucky_movie['movieID'])
+    movie_availability = get_movie_availability(lucky_movie['movieID'])
 
     try:
         netflix_link = movie_availability['netflix']['br']['link']
@@ -190,36 +192,21 @@ def add_movie():
     
     
 def add_food():
-    food = input('Food: ')
-    a = '2'
-    while a == '2': 
-        print('Is this the movie? ' + search_results[result_index]['title'])
-        print("1 -> Yep")
-        print("2 -> Nop")
-        a = input()
-        if a == 1:
-            pass
-        elif a == '2':
-            print(':(')
-            print('1 -> Input another name')
-            print('2 -> Next movie')
-            b = input()
-
-            if b == '1':
-                add_movie()
-                break
-            elif b == '2':
-                result_index += 1
-            else:
-                print('Sorry, I did not understand')
-        else:
-            pass
-                
-                
+    food = input('Food: ')        
     food_list = pd.read_csv('movie_list.csv')
     food_list = food_list.append(pd.Series([food_list], index=['Food']), ignore_index=True)
     food_list.to_csv('food_list.csv', index=False)
     print('Done!')
+    for i in range(2):
+        time.sleep(.5)
+        print('.')
+    print('Add another one?')
+    print('1 -> Yes')
+    print('2 -> No')
+    another = input()
+
+    if another == '1':
+        add_food()
     
     
 def __init__():
@@ -245,6 +232,7 @@ def __init__():
         elif a == '4':
             print('add_food()')
         elif a == '5':
+            ## idea: instead print 'Have a good movie!' if movie was rolled
             print('Goodbye!')
             time.sleep(1.5)
             break
