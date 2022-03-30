@@ -8,11 +8,8 @@ import requests
 import json
 
 # for the images
-import sys
-from colorama import init
-init(strip=not sys.stdout.isatty()) # strip colors if stdout is redirected
-from termcolor import cprint
-from pyfiglet import figlet_format
+
+
 
 
 #global variables
@@ -23,6 +20,22 @@ REQUEST_URL = 'https://streaming-availability.p.rapidapi.com/get/basic'
 country = 'br'
 
 #ASCII art
+
+title = """
+    __  ___           _    
+   /  |/  /___ _   __(_)__ 
+  / /|_/ / __ \ | / / / _ \\
+ / /  / / /_/ / |/ / /  __/
+/_/  /_/\____/|___/_/\___/ 
+
+
+             _   ___       __    __
+            / | / (_)___ _/ /_  / /_
+           /  |/ / / __ `/ __ \/ __/
+          / /|  / / /_/ / / / / /_
+         /_/ |_/_/\__, /_/ /_/\__/
+                 /____/
+"""
 
 fireworks = """
                                        .''.       
@@ -209,9 +222,8 @@ def add_food():
         add_food()
     
     
-def __init__():
-    cprint(figlet_format('Movie', font='slant'), attrs=['bold'])
-    cprint(figlet_format('    Night', font='slant'), attrs=['bold'])
+def init():
+    print(title)
     while True:
         for i in range(3):
             print('.')
@@ -241,4 +253,4 @@ def __init__():
             
             
             
-__init__()
+init()
