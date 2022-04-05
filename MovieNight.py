@@ -87,7 +87,7 @@ def get_imdb(searched_movie):
 
 
 def roll_movie():
-    movie_list = pd.read_csv('movie_list.csv')
+    movie_list = pd.read_csv('movie_list.csv', dtype={'movieID': str})
     lucky_movie = movie_list.iloc[np.random.randint(0, movie_list.shape[0]), :]
     
     #rolling movie
@@ -108,11 +108,11 @@ def roll_movie():
     #----
     def get_movie_availability(imdb_id):
         headers = {
-            'X-RapidAPI-Host': RAPIDAPI_HOST,
-            'X-RapidAPI-Key': RAPIDAPI_KEY
+            'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com', #RAPIDAPI_HOST,
+            'X-RapidAPI-Key': 'c4bc6b5210msh7c0e4e2664d48bfp159b1ajsne6be12300548' # RAPIDAPI_KEY
         }
         params = {
-            'country': country,
+            'country': 'br', # country,
             'imdb_id': f'tt{imdb_id}',
             'output_language': 'en'
         }   
@@ -125,7 +125,7 @@ def roll_movie():
         except:
             return 'piracy time'
     #----
-
+    
     movie_availability = get_movie_availability(lucky_movie['movieID'])
 
     try:
@@ -140,7 +140,7 @@ def roll_movie():
         prime_status = False
 
             
-    if netflix_status == True:
+    if True: # netflix_status == True:
         print(f'Netflix link: {netflix_link}')         
     elif prime_status == True:
         print(f'Prime link: {prime_link}')         
@@ -199,15 +199,20 @@ def add_movie():
                 
                 
     movie_list = pd.read_csv('movie_list.csv')
-    movie_list = movie_list.append(pd.Series([search_results[result_index]['title'], 'no path'], index=['Title', 'Path']), ignore_index=True)
+    movie_list = movie_list.append(
+        pd.Series(
+            [search_results[result_index].movieID,
+            search_results[result_index]['title']],
+            index=['movieID', 'Title']),
+        ignore_index=True)
     movie_list.to_csv('movie_list.csv', index=False)
     print('Done!')
     
     
 def add_food():
     food = input('Food: ')        
-    food_list = pd.read_csv('movie_list.csv')
-    food_list = food_list.append(pd.Series([food_list], index=['Food']), ignore_index=True)
+    food_list = pd.read_csv('food_list.csv')
+    food_list = food_list.append(pd.Series([food], index=['Food']), ignore_index=True)
     food_list.to_csv('food_list.csv', index=False)
     print('Done!')
     for i in range(2):
@@ -242,7 +247,7 @@ def init():
         elif a == '3':
             add_movie()
         elif a == '4':
-            print('add_food()')
+            add_food()
         elif a == '5':
             ## idea: instead print 'Have a good movie!' if movie was rolled
             print('Goodbye!')
