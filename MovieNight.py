@@ -140,8 +140,9 @@ def roll_movie():
         prime_status = False
 
             
-    if True: # netflix_status == True:
-        print(f'Netflix link: {netflix_link}')         
+    if netflix_status == True:
+        print('Netflix link:')
+        print("  " + netflix_link)         
     elif prime_status == True:
         print(f'Prime link: {prime_link}')         
     else:
