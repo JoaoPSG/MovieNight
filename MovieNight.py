@@ -7,6 +7,8 @@ import imdb
 import requests
 import json
 
+from keys import RAPIDAPI_KEY
+
 # for the images
 
 
@@ -15,7 +17,6 @@ import json
 #global variables
 
 RAPIDAPI_HOST = 'streaming-availability.p.rapidapi.com'
-RAPIDAPI_KEY = 'c4bc6b5210msh7c0e4e2664d48bfp159b1ajsne6be12300548'
 REQUEST_URL = 'https://streaming-availability.p.rapidapi.com/get/basic'
 country = 'br'
 
@@ -108,11 +109,11 @@ def roll_movie():
     #----
     def get_movie_availability(imdb_id):
         headers = {
-            'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com', #RAPIDAPI_HOST,
-            'X-RapidAPI-Key': 'c4bc6b5210msh7c0e4e2664d48bfp159b1ajsne6be12300548' # RAPIDAPI_KEY
+            'X-RapidAPI-Host': RAPIDAPI_HOST,
+            'X-RapidAPI-Key': RAPIDAPI_KEY
         }
         params = {
-            'country': 'br', # country,
+            'country': country,
             'imdb_id': f'tt{imdb_id}',
             'output_language': 'en'
         }   
